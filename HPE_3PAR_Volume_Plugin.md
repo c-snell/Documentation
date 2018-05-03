@@ -1,4 +1,4 @@
-##ETCD config
+**ETCD config**
 
 ```
 export HostIP="10.10.1.60"
