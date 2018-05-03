@@ -51,7 +51,7 @@ iscsi_ip_address = 10.10.1.155
 hpe3par_iscsi_chap_enabled = False
 hpe3par_iscsi_ips = 10.10.1.155,10.10.1.156
 use_multipath = True
-enforce_multipath = False
+enforce_multipath = True
 ```
 
 ```
@@ -107,13 +107,13 @@ $ systemctl daemon-reload
 $ systemctl restart docker.service
 ```
 
-**Configure Docker Compose**
+## Configure Docker Compose
 
 ```
 $ vi ~/docker-compose.yml
 ```
 
-This is a valid docker-compose.yml for FC
+### This is a valid docker-compose.yml for FC
 
 ```
 hpedockerplugin:
@@ -137,11 +137,12 @@ hpedockerplugin:
      - /opt/hpe/data:/opt/hpe/data:rshared
 ```
 
-This is a valid docker-compose.yml for iSCSI per https://github.com/hpe-storage/python-hpedockerplugin/blob/plugin_v2/docs/multipath.md
+### This is a valid docker-compose.yml for iSCSI
+per https://github.com/hpe-storage/python-hpedockerplugin/blob/plugin_v2/docs/multipath.md
 
 ```
 hpedockerplugin:
-  image: hpe-storage/python-hpedockerplugin:plugin_v2
+  image: hpestorage/legacyvolumeplugin:2.1
   container_name: plugin_container
   net: host
   privileged: true
@@ -156,6 +157,7 @@ hpedockerplugin:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/iscsi/iscsid.conf:/etc/iscsi/iscsid.conf
       - /etc/multipath.conf:/etc/multipath.conf
+
 ```
 
 **Configuring iSCSI Multipathing in /etc/iscsi/iscsid.conf**
@@ -171,11 +173,12 @@ node.session.timeo.replacement_timeout = 10
 node.conn[0].timeo.noop_out_interval = 10
 ```
 
-Lastly, make the following additions to the /etc/hpedockerplugin/hpe.conf file to enable multipathing.
+Lastly, make the following additions to the **/etc/hpedockerplugin/hpe.conf** file to enable multipathing.
 
+```
 use_multipath = True
 enforce_multipath = True
-
+```
 
 **Start up the container**
 
@@ -183,10 +186,10 @@ Make sure you are in the location of the docker-compose.yml file
 ```	 
 $ docker-compose up -d
 ```
-**In case you are missing docker-compose**
-https://docs.docker.com/compose/install/#install-compose
 ```
-$ sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+In case you are missing docker-compose, https://docs.docker.com/compose/install/#install-compose
+
+$ curl -x 16.85.88.10:8080 -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 $ sudo chmod +x /usr/local/bin/docker-compose
 
 # Test the installation
@@ -195,7 +198,6 @@ docker-compose version 1.21.0, build 1719ceb
 ```
 
 Create 2 symbolic links by using these steps
-
 ```
 $ mkdir -p /run/docker/plugins/hpe
 $ cd /run/docker/plugins/hpe
@@ -203,7 +205,7 @@ $ ln -s ../hpe.sock.lock  hpe.sock.lock
 $ ln -s ../hpe.sock  hpe.sock
 ```
 
-IMPORTANT NOTE: The /run/docker/plugins/hpe/hpe.sock and /run/docker/plugins/hpe/hpe.sock.lock files are not automatically removed when you stop the container. Therefore, these files will need to be removed manually between each run of the plugin.
+**IMPORTANT NOTE:** The /run/docker/plugins/hpe/hpe.sock and /run/docker/plugins/hpe/hpe.sock.lock files are not automatically removed when you stop the container. Therefore, these files will need to be removed manually between each run of the plugin.
 
 **Test the plugin**
 ```
