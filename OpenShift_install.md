@@ -1,33 +1,33 @@
 # Openshift Install guide
 
 
-Drop into root
-```bash
-
-sudo su -
+**Drop into root**
 ```
 
-```bash
-systemctl disable firewalld
-systemctl stop firewalld
-systemctl status firewalld
-yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
-yum update -y
-yum install ansible  pyOpenSSL
-yum install docker-1.12.6
-systemctl daemon-reload
-docker version
-systemctl enable docker
-systemctl start docker
-docker version
-docker run hello-world   #run to validate Docker install
-mkdir -p /etc/systemd/system/docker.service.d  #Set proxy settings in Docker
-cd /etc/systemd/system/docker.service.d
-vi http-proxy.conf
+$ sudo su -
+```
 
 ```
-# Add the following:
-```bash
+$ systemctl disable firewalld
+$ systemctl stop firewalld
+$ systemctl status firewalld
+$ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
+$ yum update -y
+$ yum install ansible  pyOpenSSL
+$ yum install docker-1.12.6
+$ systemctl daemon-reload
+$ docker version
+$ systemctl enable docker
+$ systemctl start docker
+$ docker version
+$ docker run hello-world   #run to validate Docker install
+$ mkdir -p /etc/systemd/system/docker.service.d  #Set proxy settings in Docker
+$ cd /etc/systemd/system/docker.service.d
+$ vi http-proxy.conf
+
+```
+**Add the following:**
+```
 
 [Service]
 Environment="HTTP_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
@@ -35,8 +35,8 @@ Environment="HTTP_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,
 
 ```
 
-```bash
-vi https-proxy.conf
+```
+$ vi https-proxy.conf
 ```
 **Add the following:**
 
@@ -44,53 +44,54 @@ vi https-proxy.conf
 [Service]
 Environment="HTTPS_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
 ```
-# Save and Exit
+**Save and Exit**
 
-# Pre-configure OpenShift Networks in Docker:
-```bash
+**Pre-configure OpenShift Networks in Docker:**
+```
 
-vi /etc/docker/daemon.json
+$ vi /etc/docker/daemon.json
 
 ```
-# Add the following
-```bash
+
+**Add the following**
+```
 { "insecure-registries": ["172.30.0.0/16"] }
 
 ```
 
-# Save and Exit
+**Save and Exit**
 
-```bash
-systemctl daemon-reload && systemctl restart docker
-yum install -y iscsi-initiator-utils device-mapper-multipath
-vi /etc/profile.d/proxy.sh
+```
+$ systemctl daemon-reload && systemctl restart docker
+$ yum install -y iscsi-initiator-utils device-mapper-multipath
+$ vi /etc/profile.d/proxy.sh
 ```
 
-# Add the following:
-```bash
+**Add the following:**
+```
 export http_proxy="http://16.85.88.10:8080"
 export https_proxy="http://16.85.88.10:8080"
 export no_proxy="127.0.0.1,localhost,10.10.1.66,10.10.1.67,10.10.1.68,k8-srik1,k8-srik1.virtware.co,.virtware.com,10.10.1.150,10.10.1.151,10.10.1.155,10.10.1.156,10.10.1.51,10.10.1.50"
 ```
 
-# Save and Exit
+**Save and Exit**
 
 ```
-reboot
+$ reboot
 ```
 
 **drop into root**
 ```
-sudo su -
+$ sudo su -
 ```
-# Run the following on all masters and worker nodes to configure ssh passwordless access
+**Run the following on all masters and worker nodes to configure ssh passwordless access**
 ```
-ssh-keygen
-for host in k8-srik1.virtware.co k8-srik2.virtware.co k8-srik3.virtware.co; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
+$ ssh-keygen
+$ for host in k8-srik1.virtware.co k8-srik2.virtware.co k8-srik3.virtware.co; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
 ```
 
 ```
-vi /etc/ansible/hosts
+$ vi /etc/ansible/hosts
 ```
 **Replace all content of hosts file with the following:**
 ```
@@ -198,13 +199,13 @@ k8-srik3 openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
 **Save and exit**
 
 ```
-git clone https://github.com/openshift/openshift-ansible
-cd openshift-ansible/
-git checkout release-3.7
+$ git clone https://github.com/openshift/openshift-ansible
+$ cd openshift-ansible/
+$ git checkout release-3.7
 ```
 **Before starting the install, Validate the proxy is configured especially no_proxy for localhost**
 ```
-env | grep _proxy
+$ env | grep _proxy
 ```
 ** Should look like the following:**
 ```
@@ -216,7 +217,7 @@ no_proxy=127.0.0.1,localhost,10.10.1.60,10.10.1.61,k8-srik1,k8-srik1.virtware.co
 
 **Ready to begin OpenShift install**
 ```
-ansible-playbook -i /etc/ansible/hosts ~/openshift-ansible/playbooks/byo/config.yml -e openshift_disable_check=disk_availability,docker_storage
+$ ansible-playbook -i /etc/ansible/hosts ~/openshift-ansible/playbooks/byo/config.yml -e openshift_disable_check=disk_availability,docker_storage
 ```
 
 **Now grab a cup of coffee, it will be a while...**
@@ -225,8 +226,8 @@ ansible-playbook -i /etc/ansible/hosts ~/openshift-ansible/playbooks/byo/config.
 
 **Validate install of OpenShift**
 ```
-oc status
-oc get nodes
+$ oc status
+$ oc get nodes
 NAME                      STATUS    AGE       VERSION
 k8-srik2.virtware.co   Ready     1d        v1.7.6+a08f5eeb62
 k8-srik3.virtware.co   Ready     1d        v1.7.6+a08f5eeb62
