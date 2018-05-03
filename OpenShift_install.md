@@ -3,7 +3,6 @@
 
 **Drop into root**
 ```
-
 $ sudo su -
 ```
 
@@ -26,20 +25,18 @@ $ cd /etc/systemd/system/docker.service.d
 $ vi http-proxy.conf
 
 ```
+
 **Add the following:**
 ```
-
 [Service]
 Environment="HTTP_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
-# Save and Exit
-
 ```
+**Save and Exit**
 
 ```
 $ vi https-proxy.conf
 ```
 **Add the following:**
-
 ```bash
 [Service]
 Environment="HTTPS_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
@@ -48,17 +45,13 @@ Environment="HTTPS_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1
 
 **Pre-configure OpenShift Networks in Docker:**
 ```
-
 $ vi /etc/docker/daemon.json
-
 ```
 
 **Add the following**
 ```
 { "insecure-registries": ["172.30.0.0/16"] }
-
 ```
-
 **Save and Exit**
 
 ```
@@ -73,7 +66,6 @@ export http_proxy="http://16.85.88.10:8080"
 export https_proxy="http://16.85.88.10:8080"
 export no_proxy="127.0.0.1,localhost,10.10.1.66,10.10.1.67,10.10.1.68,k8-srik1,k8-srik1.virtware.co,.virtware.com,10.10.1.150,10.10.1.151,10.10.1.155,10.10.1.156,10.10.1.51,10.10.1.50"
 ```
-
 **Save and Exit**
 
 ```
@@ -84,16 +76,19 @@ $ reboot
 ```
 $ sudo su -
 ```
+
 **Run the following on all masters and worker nodes to configure ssh passwordless access**
 ```
 $ ssh-keygen
 $ for host in k8-srik1.virtware.co k8-srik2.virtware.co k8-srik3.virtware.co; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
 ```
 
+**Configure ansible on the Master node only**
 ```
 $ vi /etc/ansible/hosts
 ```
-**Replace all content of hosts file with the following:**
+
+**Replace all content of Ansible hosts file with the following:**
 ```
 [OSEv3:children]
 masters
@@ -195,7 +190,6 @@ k8-srik1.virtware.co openshift_schedulable=True openshift_node_labels="{'region'
 k8-srik2.virtware.co openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
 k8-srik3 openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
 ```
-
 **Save and exit**
 
 ```
@@ -203,11 +197,13 @@ $ git clone https://github.com/openshift/openshift-ansible
 $ cd openshift-ansible/
 $ git checkout release-3.7
 ```
+
 **Before starting the install, Validate the proxy is configured especially no_proxy for localhost**
 ```
 $ env | grep _proxy
 ```
-** Should look like the following:**
+
+**Should look like the following:**
 ```
 [root@k8-srik1 ~]# env | grep _proxy
 http_proxy=http://16.85.88.10:8080
