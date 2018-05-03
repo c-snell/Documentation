@@ -1,0 +1,238 @@
+# Openshift Install guide
+
+
+Drop into root
+```bash
+
+sudo su -
+```
+
+```bash
+systemctl disable firewalld
+systemctl stop firewalld
+systemctl status firewalld
+yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
+yum update -y
+yum install ansible  pyOpenSSL
+yum install docker-1.12.6
+systemctl daemon-reload
+docker version
+systemctl enable docker
+systemctl start docker
+docker version
+docker run hello-world   #run to validate Docker install
+mkdir -p /etc/systemd/system/docker.service.d  #Set proxy settings in Docker
+cd /etc/systemd/system/docker.service.d
+vi http-proxy.conf
+
+```
+# Add the following:
+```bash
+
+[Service]
+Environment="HTTP_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
+# Save and Exit
+
+```
+
+```bash
+vi https-proxy.conf
+```
+**Add the following:**
+
+```bash
+[Service]
+Environment="HTTPS_PROXY=http://16.85.88.10:8080/" "NO_PROXY=localhost,127.0.0.1,10.10.1.66,10.10.1.67,10.10.1.68,10.10.1.150,10.10.1.151,.virtware.co"
+```
+# Save and Exit
+
+# Pre-configure OpenShift Networks in Docker:
+```bash
+
+vi /etc/docker/daemon.json
+
+```
+# Add the following
+```bash
+{ "insecure-registries": ["172.30.0.0/16"] }
+
+```
+
+# Save and Exit
+
+```bash
+systemctl daemon-reload && systemctl restart docker
+yum install -y iscsi-initiator-utils device-mapper-multipath
+vi /etc/profile.d/proxy.sh
+```
+
+# Add the following:
+```bash
+export http_proxy="http://16.85.88.10:8080"
+export https_proxy="http://16.85.88.10:8080"
+export no_proxy="127.0.0.1,localhost,10.10.1.66,10.10.1.67,10.10.1.68,k8-srik1,k8-srik1.virtware.co,.virtware.com,10.10.1.150,10.10.1.151,10.10.1.155,10.10.1.156,10.10.1.51,10.10.1.50"
+```
+
+# Save and Exit
+
+```
+reboot
+```
+
+**drop into root**
+```
+sudo su -
+```
+# Run the following on all masters and worker nodes to configure ssh passwordless access
+```
+ssh-keygen
+for host in k8-srik1.virtware.co k8-srik2.virtware.co k8-srik3.virtware.co; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
+```
+
+```
+vi /etc/ansible/hosts
+```
+**Replace all content of hosts file with the following:**
+```
+[OSEv3:children]
+masters
+nodes
+etcd
+# lb
+# nfs
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+
+#openshift_enable_unsupported_configurations=false
+
+os_firewall_use_firewalld=True
+
+ansible_user=root
+
+ansible_become=yes
+
+debug_level=2
+
+# Specify the deployment type. Valid values are origin and openshift-enterprise.
+openshift_deployment_type=origin
+#openshift_deployment_type=openshift-enterprise
+
+openshift_disable_check=docker_storage,docker_image_availability
+
+docker_version="1.12.6"
+
+openshift_release=v3.7
+
+openshift_image_tag=v3.7.0
+
+openshift_pkg_version=-3.7.1-2.el7
+
+openshift_master_api_port=8443
+openshift_master_console_port=8443
+
+openshift_http_proxy=http://proxy.houston.hpecorp.net:8080
+openshift_https_proxy=http://proxy.houston.hpecorp.net:8080
+openshift_no_proxy='10.10.1.66,10.10.1.67,10.10.1.68,localhost,127.0.0.1,localaddress,.localdomain.com,.virtware.co,.hpecorp.net,.hp.com,.hpcloud.net'
+openshift_builddefaults_http_proxy=http://proxy.houston.hpecorp.net:8080
+openshift_builddefaults_https_proxy=http://proxy.houston.hpecorp.net:8080
+openshift_builddefaults_no_proxy='10.10.1.66,10.10.1.67,10.10.1.68,localhost,127.0.0.1,localaddress,.localdomain.com,.virtware.co,.hpecorp.net,.hp.com,.hpcloud.net'
+
+openshift_master_identity_providers=[{'name': 'allow_all', 'login': 'true', 'challenge': 'true', 'kind': 'AllowAllPasswordIdentityProvider'}]
+
+# openshift_management_install_management=true
+
+openshift_hosted_manage_router=true
+# data to the inventory.  The variable to house the data is openshift_hosted_routers
+#openshift_hosted_routers=[{'name': 'router1', 'certificate': {'certfile': '/path/to/certificate/abc.crt', 'keyfile': '/path/to/certificate/abc.key', 'cafile': '/path/to/certificate/ca.crt'}, 'replicas': 1, 'serviceaccount': 'router', 'namespace': 'default', 'stats_port': 1936, 'edits': [], 'images': 'openshift3/ose-${component}:${version}', 'selector': 'type=router1', 'ports': ['80:80', '443:443']}, {'name': 'router2', 'certificate': {'certfile': '/path/to/certificate/xyz.crt', 'keyfile': '/path/to/certificate/xyz.key', 'cafile': '/path/to/certificate/ca.crt'}, 'replicas': 1, 'serviceaccount': 'router', 'namespace': 'default', 'stats_port': 1936, 'edits': [{'action': 'append', 'key': 'spec.template.spec.containers[0].env', 'value': {'name': 'ROUTE_LABELS', 'value': 'route=external'}}], 'images': 'openshift3/ose-${component}:${version}', 'selector': 'type=router2', 'ports': ['80:80', '443:443']}]
+openshift_hosted_registry_selector='region=infra'
+openshift_hosted_router_selector='region=infra'
+#openshift_hosted_registry_replicas=2
+#openshift_hosted_registry_cert_expire_days=730
+openshift_hosted_manage_registry=true
+openshift_hosted_manage_router=true
+
+# Enable service catalog
+openshift_enable_service_catalog=false
+
+# Enable template service broker (requires service catalog to be enabled, above)
+template_service_broker_install=false
+
+# openshift_service_catalog_image_version=v3.7
+
+# TSB image tag
+# template_service_broker_version='v3.7'
+
+# Configure one of more namespaces whose templates will be served by the TSB
+# openshift_template_service_broker_namespaces=['openshift','hpedory']
+
+# Configure usage of openshift_clock role.
+#openshift_clock_enabled=true
+
+# For example, adding this cluster as a container provider,
+# playbooks/openshift-management/add_container_provider.yml
+openshift_management_username=admin
+openshift_management_password=hpinvent
+
+# host group for masters
+[masters]
+k8-srik1.virtware.co
+
+[etcd]
+#ose3-etcd[1:3]-ansible.test.example.com
+k8-srik1.virtware.co
+
+# NOTE: Containerized load balancer hosts are not yet supported, if using a global
+# containerized=true host variable we must set to false.
+#[lb]
+#ose3-lb-ansible.test.example.com containerized=false
+
+# NOTE: Currently we require that masters be part of the SDN which requires that they also be nodes
+[nodes]
+# masters should be schedulable to run web console pods
+k8-srik1.virtware.co openshift_schedulable=True openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+k8-srik2.virtware.co openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
+k8-srik3 openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
+```
+
+**Save and exit**
+
+```
+git clone https://github.com/openshift/openshift-ansible
+cd openshift-ansible/
+git checkout release-3.7
+```
+**Before starting the install, Validate the proxy is configured especially no_proxy for localhost**
+```
+env | grep _proxy
+```
+** Should look like the following:**
+```
+[root@k8-srik1 ~]# env | grep _proxy
+http_proxy=http://16.85.88.10:8080
+https_proxy=http://16.85.88.10:8080
+no_proxy=127.0.0.1,localhost,10.10.1.60,10.10.1.61,k8-srik1,k8-srik1.virtware.co,.virtware.com,10.10.1.150,10.10.1.151,10.10.1.155,10.10.1.156,10.10.1.51,10.10.1.50
+```
+
+**Ready to begin OpenShift install**
+```
+ansible-playbook -i /etc/ansible/hosts ~/openshift-ansible/playbooks/byo/config.yml -e openshift_disable_check=disk_availability,docker_storage
+```
+
+**Now grab a cup of coffee, it will be a while...**
+
+**Hopefully completes with no errors.**
+
+**Validate install of OpenShift**
+```
+oc status
+oc get nodes
+NAME                      STATUS    AGE       VERSION
+k8-srik2.virtware.co   Ready     1d        v1.7.6+a08f5eeb62
+k8-srik3.virtware.co   Ready     1d        v1.7.6+a08f5eeb62
+```
+
+**Access the URL via: https://k8-srik1.virtware.co:8443**
+
+
+**Now proceed with install of HPE 3PAR Storage Plugin**
