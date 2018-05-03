@@ -1,6 +1,6 @@
 # Openshift Install guide
 
-You will need **RHEL Server 7.4** to run RPM based installer.
+You will need **RHEL Server 7** (7.4 at the time of this writing) to run RPM based installer.
 
 To install OpenShift 3.7 multinode setup using ansible playbooks, review the following sections to understand the Redhat OpenShift deployment and requirements:
 
