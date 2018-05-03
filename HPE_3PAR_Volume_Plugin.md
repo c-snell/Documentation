@@ -90,9 +90,30 @@ $ systemctl enable iscsid multipathd
 $ docker pull hpestorage/legacyvolumeplugin:2.1
 ```
 
+**Running the hpedockerplugin with Docker Compose:**
+
+Edit the docker service
+```
+$ vi /usr/lib/systemd/system/docker.service
+```
+
+Change
+**MountFlags=shared** (default is slave)
+
+
+Restart the docker daemon
+```
+$ systemctl daemon-reload
+$ systemctl restart docker.service
+```
+
+IMPORTANT NOTE: The /run/docker/plugins/hpe/hpe.sock and /run/docker/plugins/hpe/hpe.sock.lock files are not automatically removed when you stop the container. Therefore, these files will need to be removed manually between each run of the plugin.
+
 ```
 $ vi ~/docker-compose.yml
 ```
+
+This is a valid docker-compose.yml for FC
 
 ```
 hpedockerplugin:
@@ -116,8 +137,50 @@ hpedockerplugin:
      - /opt/hpe/data:/opt/hpe/data:rshared
 ```
 
+This is a valid docker-compose.yml for iSCSI per https://github.com/hpe-storage/python-hpedockerplugin/blob/plugin_v2/docs/multipath.md
+
+```
+hpedockerplugin:
+  image: hpe-storage/python-hpedockerplugin:plugin_v2
+  container_name: plugin_container
+  net: host
+  privileged: true
+  volumes:
+      - /dev:/dev
+      - /run/docker/plugins:/run/docker/plugins
+      - /lib/modules:/lib/modules
+      - /var/lib/docker/:/var/lib/docker
+      - /etc/hpedockerplugin/data:/etc/hpedockerplugin/data:shared
+      - /etc/iscsi/initiatorname.iscsi:/etc/iscsi/initiatorname.iscsi
+      - /etc/hpedockerplugin:/etc/hpedockerplugin
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/iscsi/iscsid.conf:/etc/iscsi/iscsid.conf
+      - /etc/multipath.conf:/etc/multipath.conf
+```
+
+**Configuring iSCSI Multipathing in /etc/iscsi/iscsid.conf**
+
+You can find details on how to properly configure multipath.conf in the [HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide] (http://h20565.www2.hpe.com/hpsc/doc/public/display?docId=c04448818).
+
+Change the following iSCSI parameters in /etc/iscsi/iscsid.conf. Please review the HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide for any required updates.
+
+```
+node.startup = automatic
+node.conn[0].startup = automatic
+node.session.timeo.replacement_timeout = 10
+node.conn[0].timeo.noop_out_interval = 10
+```
+
+Lastly, make the following additions to the /etc/hpedockerplugin/hpe.conf file to enable multipathing.
+
+use_multipath = True
+enforce_multipath = True
+
+
+**Start up the container**
+
 ```	 
-$ docker-compose ~/docker-compose.yml
+$ docker-compose up -d
 ```
 **In case you are missing docker-compose**
 https://docs.docker.com/compose/install/#install-compose
