@@ -12,7 +12,7 @@ https://docs.openshift.org/3.7/install_config/install/prerequisites.html#install
 
 3.	Follow the host preparation (master and worker nodes) guide.
 ```
-**IMPORTANT:** Follow the steps for configuring the RPM-based installer for RHEL 7 systems NOT Atomic Host systems.
+Follow the steps for configuring the RPM-based installer for RHEL 7 systems NOT Atomic Host systems.
 ```
 https://docs.openshift.org/latest/install_config/install/host_preparation.html
 
