@@ -1,8 +1,29 @@
 # Openshift Install guide
 
+You will need RHEL Server 7.4 to run RPM based installer.
 
-**Drop into root**
+To install OpenShift 3.7 multinode setup using ansible playbooks, review the following sections to understand the Redhat OpenShift deployment and requirements:
+
+1.	OpenShift Single/Multi-Node deployment scenarios:
+https://docs.openshift.org/3.7/install_config/install/planning.html
+
+2.	Validate all Pre-Requisites:
+https://docs.openshift.org/3.7/install_config/install/prerequisites.html#install-config-install-prerequisites
+
+3.	Follow the host preparation (master and worker nodes) guide.
 ```
+**IMPORTANT:** Follow the steps for configuring the RPM-based installer for RHEL 7 systems NOT Atomic Host systems.
+```
+https://docs.openshift.org/latest/install_config/install/host_preparation.html
+
+**Note:**
+Skip over “**Configuring Docker Storage**” & “**Enabling Image Signature Support**” sections since they are not required at this time.
+
+
+The following is a composite of the steps outlined in the pre-req, host preparation, and advanced installation guides.
+
+```
+# drop into root
 $ sudo su -
 ```
 
@@ -72,8 +93,8 @@ export no_proxy="127.0.0.1,localhost,10.10.1.66,10.10.1.67,10.10.1.68,k8-srik1,k
 $ reboot
 ```
 
-**drop into root**
 ```
+# drop into root
 $ sudo su -
 ```
 
@@ -218,9 +239,11 @@ $ ansible-playbook -i /etc/ansible/hosts ~/openshift-ansible/playbooks/byo/confi
 
 **Now grab a cup of coffee, it will be a while...**
 
-**Hopefully completes with no errors.**
+**45 minutes later...**
 
-**Validate install of OpenShift**
+**OpenShift install completes with no errors.**
+
+**Now let's validate the install of OpenShift**
 ```
 $ oc status
 $ oc get nodes
