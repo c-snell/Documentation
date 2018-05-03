@@ -107,7 +107,7 @@ $ systemctl daemon-reload
 $ systemctl restart docker.service
 ```
 
-IMPORTANT NOTE: The /run/docker/plugins/hpe/hpe.sock and /run/docker/plugins/hpe/hpe.sock.lock files are not automatically removed when you stop the container. Therefore, these files will need to be removed manually between each run of the plugin.
+**Configure Docker Compose**
 
 ```
 $ vi ~/docker-compose.yml
@@ -179,6 +179,7 @@ enforce_multipath = True
 
 **Start up the container**
 
+Make sure you are in the location of the docker-compose.yml file
 ```	 
 $ docker-compose up -d
 ```
@@ -201,6 +202,8 @@ $ cd /run/docker/plugins/hpe
 $ ln -s ../hpe.sock.lock  hpe.sock.lock
 $ ln -s ../hpe.sock  hpe.sock
 ```
+
+IMPORTANT NOTE: The /run/docker/plugins/hpe/hpe.sock and /run/docker/plugins/hpe/hpe.sock.lock files are not automatically removed when you stop the container. Therefore, these files will need to be removed manually between each run of the plugin.
 
 **Test the plugin**
 ```
