@@ -217,15 +217,15 @@ $ docker volume create -d hpe --name sample_vol -o size=1
 $ sudo subscription-manager repos --enable=rhel-7-server-optional-rpms
 $ sudo yum install -y golang make
 $ git clone https://github.com/hpe-storage/dory.git
+$ cd dory
 $ make gettools
 $ make dory
 ```
 
 **You should end up with a dory executable in the ./bin directory and be ready for installation.**
 ```
-$ cd /usr/libexec/kubernetes/kubelet-plugins/volume/exec/
-$ mkdir dev.hpe.com~hpe
-$ cd dev.hpe.com~hpe
+$ mkdir -p /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe
+$ cd /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe
 $ cp <path>/dory hpe
 ```
 

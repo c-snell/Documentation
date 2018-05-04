@@ -1,0 +1,10 @@
+{
+    "dockerVolumePluginSocketPath": "/run/docker/plugins/hpe.sock",
+    "logDebug": true,
+    "enable1.6": true,
+    "supportsCapabilities": false,
+    "stripK8sFromOptions": true,
+    "createVolumes": true,
+    "listOfStorageResourceOptions": ["size"],
+    "defaultOptions": [{"size": 10}]
+}
