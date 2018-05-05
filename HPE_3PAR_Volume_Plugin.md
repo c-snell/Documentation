@@ -113,7 +113,7 @@ $ systemctl restart docker.service
 $ vi ~/docker-compose.yml
 ```
 
-### This is a valid docker-compose.yml for FC
+### This is a valid docker-compose.yml for FC & iSCSI
 
 ```
 hpedockerplugin:
@@ -137,28 +137,7 @@ hpedockerplugin:
      - /opt/hpe/data:/opt/hpe/data:rshared
 ```
 
-### This is a valid docker-compose.yml for iSCSI
-per https://github.com/hpe-storage/python-hpedockerplugin/blob/plugin_v2/docs/multipath.md
 
-```
-hpedockerplugin:
-  image: hpestorage/legacyvolumeplugin:2.1
-  container_name: plugin_container
-  net: host
-  privileged: true
-  volumes:
-      - /dev:/dev
-      - /run/docker/plugins:/run/docker/plugins
-      - /lib/modules:/lib/modules
-      - /var/lib/docker/:/var/lib/docker
-      - /etc/hpedockerplugin/data:/etc/hpedockerplugin/data:shared
-      - /etc/iscsi/initiatorname.iscsi:/etc/iscsi/initiatorname.iscsi
-      - /etc/hpedockerplugin:/etc/hpedockerplugin
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/iscsi/iscsid.conf:/etc/iscsi/iscsid.conf
-      - /etc/multipath.conf:/etc/multipath.conf
-
-```
 
 **Configuring iSCSI Multipathing in /etc/iscsi/iscsid.conf**
 
