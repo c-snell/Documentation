@@ -1,8 +1,22 @@
+The following will be done on the Master Node.
+
+| Docker Only Install | Single Master | Node 1 | Node 2 | Node + |
+|---------------------|---------------|--------|--------|--------|
+|etcd (port 2379,4001,2380) | etcd (port 23790,40010,23800) |-- |-- | --|
+|Managed Plugin | Legacy Plugin | Legacy Plugin | Legacy Plugin |Legacy Plugin |
+| -- | Dory | Dory | Dory | Dory |
+| -- | Doryd | -- | -- | -- |
+
+The following will be done on the Master Node:
+
 **ETCD config**
 
+Export the Master Node IP address
 ```
-export HostIP="10.10.1.60"
+export HostIP="<Master node IP>"
 ```
+
+Run the following to create the etcd container. This etcd instance is separate from the etcd deployed by Kubernetes/OpenShift and is required for managing the HPE 3PAR Docker Volume plugin. We need to modify the ports (2379, 4001, 2380) to prevent conflicts. This allows two instances of etcd to safely run in the environment.
 
 ```
 sudo docker run -d -v /usr/share/ca-certificates/:/etc/ssl/certs -p 40010:40010 \
@@ -18,27 +32,38 @@ sudo docker run -d -v /usr/share/ca-certificates/:/etc/ssl/certs -p 40010:40010 
 -initial-cluster-state new
 ```
 
+**Configure the Legacy HPE Docker Volume plugin**
+
 Add 3PAR into ~/.ssh/known_hosts
 ```
-$ ssh -l 3paradm 10.10.1.150
+$ ssh -l username <3PAR IP Address>
 ```
 
-Configure the docker plugin
+Create the plugin configuration directory
 ```
 $ mkdir -p /etc/hpedockerplugin/
+```
+
+Create the hpe.conf file
+
+```
 $ vi /etc/hpedockerplugin/hpe.conf
 ```
+
+Copy the following information into hpe.conf
+
+**iSCSI configuration**
 
 ```
 [DEFAULT]
 ssh_hosts_key_file = /root/.ssh/known_hosts  
-#change to match host IP
-host_etcd_ip_address = 10.10.1.60
+#change to match Master host IP where etcd is running
+host_etcd_ip_address = <Master Node IP>
+#Modify to match the port configured in etcd (2379 or 23790)
 host_etcd_port_number = 23790
 logging = DEBUG
 hpe3par_debug = True
 suppress_requests_ssl_warnings = True
-#change to FC
 hpedockerplugin_driver = hpedockerplugin.hpe.hpe_3par_iscsi.HPE3PARISCSIDriver
 hpe3par_api_url = https://10.10.1.150:8080/api/v1
 hpe3par_username = 3paradm
