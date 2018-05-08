@@ -163,7 +163,8 @@ enforce_multipath = True
 
 Make sure you are in the location of the docker-compose.yml file
 ```	 
-$ docker-compose up -d
+$ docker-compose up -d or
+$ docker-compose up 2>&1 | tee /tmp/plugin_logs.txt
 ```
 ```
 In case you are missing docker-compose, https://docs.docker.com/compose/install/#install-compose
@@ -191,81 +192,101 @@ $ ln -s ../hpe.sock  hpe.sock
 $ docker volume create -d hpe --name sample_vol -o size=1
 ```
 
-**Install/configure Dory**
+**Install/configure Dory/Doryd (the FlexVolume drivers) using Automated Installer**
+
+Download and run the self-extracting installer
 ```
-$ sudo subscription-manager repos --enable=rhel-7-server-optional-rpms
-$ sudo yum install -y golang make
-$ git clone https://github.com/hpe-storage/dory.git
-$ cd dory
-$ make gettools
-$ make dory
+$ wget https://github.com/hpe-storage/python-hpedockerplugin/raw/master/dory_installer
+$ chmod u+x ./dory_installer
+$ sudo ./dory_installer
+```
+This installs the Dory and Doryd binaries to:
+```
+/usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe/
 ```
 
-**You should end up with a dory executable in the ./bin directory and be ready for installation.**
+You should end up with a Doryd executable in the ./bin directory and be ready for installation, run the following to complete the install
 ```
-$ mkdir -p /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe
-$ cd /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe
-$ cp <path>/dory hpe
+$ sudo /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe/doryd  /etc/kubernetes/admin.conf hpe.com
 ```
 
-**Create a file called hpe.json in this folder**
-
-Dory looks for a configuration file with the same name as the executable with a .json extension. Following the example above, the configuration file would be /usr/libexec/kubernetes/kubelet-plugins/volume/exec/dev.hpe.com~hpe/hpe.json
-
-Contents of hpe.json
-```
-{
-    "dockerVolumePluginSocketPath": "/run/docker/plugins/hpe.sock",
-    "logFilePath": "/var/log/dory.log"
-    "logDebug": true,
-    "supportsCapabilities": true,
-    "stripK8sFromOptions": true,
-    "createVolumes": true,
-    "listOfStorageResourceOptions": ["size"]
-}
-```
 
 Restart OpenShift origin:
 ```
 $ systemctl restart origin-node
 ```
 
+Confirm the flexvolume driver started successfully
+```
+$ tail -f /var/log/dory.log
+```
+
 If everything works fine, you should be able to inspect your log file for successful initialization (/var/log/dory.log):
 ```
-Info : 2017/09/18 16:37:40 dory.go:52: [127775] entry  : Driver=hpe Version=1.0.0-ae48ca4c Socket=/run/docker/plugins/hpe.sock Overridden=true
-Info : 2017/09/18 16:37:40 dory.go:55: [127775] request: init []
-Info : 2017/09/18 16:37:40 dory.go:58: [127775] reply  : init []: {"status":"Success"}
+Info : 2018/01/04 23:42:05 dory.go:52: [19723] entry  : Driver=hpe Version=1.0.0-4adcc622 Socket=/run/docker/plugins/hpe.sock Overridden=true
+Info : 2018/01/04 23:42:05 dory.go:55: [19723] request: init []
+Info : 2018/01/04 23:42:05 dory.go:58: [19723] reply  : init []: {"status":"Success"}
+Info : 2018/01/04 23:42:12 dory.go:52: [19788] entry  : Driver=hpe Version=1.0.0-4adcc622 Socket=/run/docker/plugins/hpe.sock Overridden=true
 ```
 
 For more information, study below Dory guide:
-https://github.com/hpe-storage/dory/blob/master/docs/dory/README.md
+https://github.com/hpe-storage/python-hpedockerplugin/blob/master/docs/doryd-install-3par-docker-plugin.md
 
-**Build, Install and Configure Doryd binary**
+Now create your StorageClass and PersistentVolumeClaim
 
-Build and configure doryd binary on all master nodes. There are two ways provided to build Doryd. A host machine build and a fully containerized build. The containerized build require Docker 17.05 or newer on both client and daemon.
-
-**Host build**
-
-Doryd is written in Go and requires golang on your machine. The following example installs the necessary tools and builds Doryd on a RHEL 7.4 system:
 ```
-$ sudo subscription-manager repos --enable=rhel-7-server-optional-rpms
-$ sudo yum install -y golang make
-$ git clone https://github.com/hpe-storage/dory.git
-$ make gettools
-$ make vendor
-$ make doryd
+$ sudo oc create -f - << EOF
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+ name: sc-comp3
+provisioner: dev.hpe.com/hpe
+parameters:
+  size: "16"  
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-comp3
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+  storageClassName: sc-comp3
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-comp3
+spec:
+  containers:
+  - name: minio
+    image: minio/minio:latest
+    args:
+    - server
+    - /export
+    env:
+    - name: MINIO_ACCESS_KEY
+      value: minio
+    - name: MINIO_SECRET_KEY
+      value: doryspeakswhale
+    ports:
+    - containerPort: 9000
+    volumeMounts:
+    - name: export
+      mountPath: /export
+  volumes:
+    - name: export
+      persistentVolumeClaim:
+        claimName: pvc-comp3
+EOF
 ```
 
-You should end up with a doryd executable in ./bin directory.
-
-The doryd binary needs access to the cluster via a kubeconfig file which is available on path: /etc/kubernetes/admin.conf
-
-
-Doryd command line in OpenShift platform which is known to work is:
+Validate the Pod, PersistentVolumeClaim, PersistentVolume, and StorageClass are created:
 ```
-./bin/doryd /root/.kube/config dev.hpe.com
-```
-OR
-```
-./bin/doryd /etc/kubernetes/admin.conf dev.hpe.com
+$ oc get pod,pv,pvc,sc
+$ oc describe pod pod-comp3
 ```
