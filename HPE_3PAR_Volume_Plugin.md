@@ -261,7 +261,11 @@ Info : 2018/01/04 23:42:12 dory.go:52: [19788] entry  : Driver=hpe Version=1.0.0
 For more information, study below Dory guide:
 https://github.com/hpe-storage/python-hpedockerplugin/blob/master/docs/doryd-install-3par-docker-plugin.md
 
-Now create your StorageClass and PersistentVolumeClaim
+# Usage
+
+Now lets create a StorageClass, PersistentVolumeClaim, PV and Pod
+
+This is an all-in-one command to create each of these components. You can easily split them out into separate ```yml``` files and run the ```oc create -f <file.yml>```
 
 ```
 $ sudo oc create -f - << EOF
