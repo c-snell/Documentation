@@ -79,6 +79,32 @@ use_multipath = True
 enforce_multipath = True
 ```
 
+**Multipath Settings**
+
+When multipathing is required with the HPE 3PAR StoreServ, you must update the multipath.conf, iscsid.conf, docker-compose.yml, and hpe.conf files as outlined below.
+
+Configuring iSCSI Multipathing in /etc/iscsi/iscsid.conf
+
+You can find details on how to properly configure multipath.conf in the [HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide] (http://h20565.www2.hpe.com/hpsc/doc/public/display?docId=c04448818).
+
+Change the following iSCSI parameters in /etc/iscsi/iscsid.conf. Please review the HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide for any required updates.
+
+```
+node.startup = automatic
+node.conn[0].startup = automatic
+node.session.timeo.replacement_timeout = 10
+node.conn[0].timeo.noop_out_interval = 10
+```
+
+Lastly, make the following additions to the **/etc/hpedockerplugin/hpe.conf** file to enable multipathing.
+
+```
+use_multipath = True
+enforce_multipath = True
+```
+
+Create the multipath.conf
+
 ```
 $ vi /etc/multipath.conf
 ```
@@ -160,28 +186,6 @@ hpedockerplugin:
      - /lib64:/lib64
      - /var/run/docker.sock:/var/run/docker.sock
      - /opt/hpe/data:/opt/hpe/data:rshared
-```
-
-
-
-**Configuring iSCSI Multipathing in /etc/iscsi/iscsid.conf**
-
-You can find details on how to properly configure multipath.conf in the [HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide] (http://h20565.www2.hpe.com/hpsc/doc/public/display?docId=c04448818).
-
-Change the following iSCSI parameters in /etc/iscsi/iscsid.conf. Please review the HPE 3PAR Red Hat Enterprise Linux and Oracle Linux Implementation Guide for any required updates.
-
-```
-node.startup = automatic
-node.conn[0].startup = automatic
-node.session.timeo.replacement_timeout = 10
-node.conn[0].timeo.noop_out_interval = 10
-```
-
-Lastly, make the following additions to the **/etc/hpedockerplugin/hpe.conf** file to enable multipathing.
-
-```
-use_multipath = True
-enforce_multipath = True
 ```
 
 **Start up the container**
