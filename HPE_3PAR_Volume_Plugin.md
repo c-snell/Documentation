@@ -1,4 +1,4 @@
-The following will be done on the Master Node.
+Below is a table outlining the required components per node.
 
 | Docker Only Install | Single Master | Node 1 | Node 2 | Node + |
 |---------------------|---------------|--------|--------|--------|
