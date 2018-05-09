@@ -7,7 +7,7 @@ Below is a table outlining the required components per node.
 | -- | Dory | Dory | Dory | Dory |
 | -- | Doryd | -- | -- | -- |
 
-The following will be done on the Master Node:
+The following will be done on the Master Node. Refer to the appropriate section when installing individual components on worker nodes.
 
 **ETCD config**
 
