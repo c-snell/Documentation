@@ -32,12 +32,16 @@ $ systemctl disable firewalld
 $ systemctl stop firewalld
 $ systemctl status firewalld
 $ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
-$ yum-config-manager --add-repo https://yum.dockerproject.org/repo/main/centos/7
-$ yum update -y
-$ yum install ansible  pyOpenSSL
-$ wget https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-1.12.6-1.el7.centos.x86_64.rpm \
-    https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm
-$ rpm -ivh docker-engine-1.12.6-1.el7.centos.x86_64.rpm docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm    
+$ yum update
+$ systemctl reboot
+$ yum -y install \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ yum -y --enablerepo=epel install ansible pyOpenSSL
+$ cd ~
+$ git clone https://github.com/openshift/openshift-ansible
+$ cd openshift-ansible
+$ git checkout release-3.7
+$ yum install docker-1.13.1   
 $ systemctl daemon-reload
 $ docker version
 $ systemctl enable docker
