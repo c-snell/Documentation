@@ -132,7 +132,9 @@ Ensure the following domain suffixes and IP addresses are in the **/etc/environm
 
 The following example assumes `http_proxy` and `https_proxy` values are set:
 ```
-no_proxy=.internal.example.com,10.0.0.1,10.0.0.2,10.0.0.3,.cluster.local,.svc,localhost,127.0.0.1,172.30.0.1
+no_proxy=127.0.0.1,localhost,kube-drone1,kube-drone1.virtware.co,kube-drone2,kube-drone2.virtware.co,kube-master,kube-master.virtware.co,.virtware.com,.cluster.local,.svc,10.10.1.60,10.10.1.61,10.10.1.62,10.10.1.155,10.10.1.156,10.10.1.150,10.10.1.151,10.10.1.157,10.10.1.158,172.30.0.1,localaddress,.localdomain.com,.hpecorp.net,.hp.com,.hpcloud.net
+http_proxy=http://16.85.88.10:8080
+https_proxy=http://16.85.88.10:8080
 ```
 
 **Configure ansible on the Master node only**
