@@ -32,6 +32,7 @@ $ systemctl disable firewalld
 $ systemctl stop firewalld
 $ systemctl status firewalld
 $ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
+$ yum-config-manager --add-repo https://yum.dockerproject.org/repo/main/centos/7
 $ yum update -y
 $ yum install ansible  pyOpenSSL
 $ yum install docker-1.12.6
