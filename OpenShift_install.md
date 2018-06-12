@@ -35,7 +35,9 @@ $ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-
 $ yum-config-manager --add-repo https://yum.dockerproject.org/repo/main/centos/7
 $ yum update -y
 $ yum install ansible  pyOpenSSL
-$ yum install docker-1.12.6
+$ wget https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-1.12.6-1.el7.centos.x86_64.rpm \
+    https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm
+$ rpm -ivh docker-engine-1.12.6-1.el7.centos.x86_64.rpm docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm    
 $ systemctl daemon-reload
 $ docker version
 $ systemctl enable docker
