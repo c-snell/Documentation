@@ -111,20 +111,20 @@ $ ssh-keygen
 $ for host in k8-srik1.virtware.co k8-srik2.virtware.co k8-srik3.virtware.co; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
 ```
 
-###Setting Global Proxy Values###
-The OpenShift Origin installer uses the proxy settings in the _/etc/environment _ file.
+### Setting Global Proxy Values
+The OpenShift Origin installer uses the proxy settings in the **`/etc/environment`** file.
 
-Ensure the following domain suffixes and IP addresses are in the /etc/environment file in the no_proxy parameter:
+Ensure the following domain suffixes and IP addresses are in the **/etc/environment** file in the `no_proxy` parameter:
 
   * Master and node host names (domain suffix).
 
   * Other internal host names (domain suffix).
 
-  * Etcd IP addresses (must be IP addresses and not host names, as etcd access is done by IP address).
+  * Etcd IP addresses (must be IP addresses and not host names, as **etcd** access is done by IP address).
 
   * Docker registry IP address.
 
-  * Kubernetes IP address, by default 172.30.0.1. Must be the value set in the openshift_portal_net parameter in the Ansible inventory file, by default /etc/ansible/hosts.
+  * Kubernetes IP address, by default 172.30.0.1. Must be the value set in the `openshift_portal_net` parameter in the Ansible inventory file, by default **/etc/ansible/hosts**.
 
   * Kubernetes internal domain suffix: **`cluster.local`**
 
