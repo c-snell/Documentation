@@ -52,7 +52,6 @@ first-nginx-pod-5d77bbb868-k48zk   1/1     Running   0          6m39s
 We can inspect the pod further using the kubectl describe command:
 ```
 # kubectl describe pod first-nginx-pod-5d77bbb868-k48zk
-
 Name:           first-nginx-pod-5d77bbb868-k48zk
 Namespace:      default
 Priority:       0
@@ -103,3 +102,32 @@ Events:
   Normal  Created    7m3s   kubelet, kube-g7-node2  Created container nginx
   Normal  Started    7m3s   kubelet, kube-g7-node2  Started container nginx
 ```
+
+Lets find the IP address of the pod.
+```
+# kubectl describe pod first-nginx-pod-5d77bbb868-k48zk | select-string -Pattern IP:
+
+IP:             10.233.126.2
+
+```
+
+This IP address is only accessible from within the cluster, so lets use `port-forward` to expose the port temporarily outside the cluster.
+
+```
+# kubectl port-forward first-nginx-pod-5d77bbb868-k48zk 8081:80
+Forwarding from 127.0.0.1:8081 -> 80
+Forwarding from [::1]:8081 -> 80
+```
+>Note: port-forward is meant for temporarily exposing an application outside of a Kubernetes cluster. For a more permanent solution, look into Ingress.
+
+Finally, we can open a browser and go to:
+```
+http://127.0.0.1:8081/
+```
+
+If you see, **Welcome to nginx!**, you have successfully deployed your first pod.
+
+Now let's log into our pod. If you don't already, open another shell and run:
+
+```
+kubectl exec -it first-nginx-pod-5d77bbb868-k48zk /bin/bash
