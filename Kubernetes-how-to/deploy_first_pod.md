@@ -10,7 +10,7 @@ kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876
 Lets create a simple nginx webserver.
 
 ```
-notepad first-nginx-pod.yml
+# notepad first-nginx-pod.yml
 ```
 
 Copy and paste the following
@@ -39,19 +39,20 @@ Save and exit
 
 Create the pod, execute:
 ```
-kubectl apply -f first-nginx-pod.yml
+# kubectl apply -f first-nginx-pod.yml
 ```
 
 We can now see the pod running:
 ```
-kubectl get pods
+# kubectl get pods
 NAME                               READY   STATUS    RESTARTS   AGE
 first-nginx-pod-5d77bbb868-k48zk   1/1     Running   0          6m39s
 ```
 
 We can inspect the pod further using the kubectl describe command:
 ```
-kubectl describe pod first-nginx-pod-5d77bbb868-k48zk
+# kubectl describe pod first-nginx-pod-5d77bbb868-k48zk
+
 Name:           first-nginx-pod-5d77bbb868-k48zk
 Namespace:      default
 Priority:       0
