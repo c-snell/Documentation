@@ -52,9 +52,6 @@ first-nginx-pod-5d77bbb868-k48zk   1/1     Running   0          6m39s
 We can inspect the pod further using the kubectl describe command:
 ```
 kubectl describe pod first-nginx-pod-5d77bbb868-k48zk
-NAME                               READY   STATUS    RESTARTS   AGE
-first-nginx-pod-5d77bbb868-k48zk   1/1     Running   0          6m39s
-PS C:\Users\Administrator> kubectl describe pod first-nginx-pod-5d77bbb868-k48zk
 Name:           first-nginx-pod-5d77bbb868-k48zk
 Namespace:      default
 Priority:       0
