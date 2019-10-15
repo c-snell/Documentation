@@ -131,3 +131,4 @@ Now let's log into our pod. If you don't already, open another shell and run:
 
 ```
 kubectl exec -it first-nginx-pod-5d77bbb868-k48zk /bin/bash
+```
