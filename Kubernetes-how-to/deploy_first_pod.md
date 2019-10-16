@@ -3,10 +3,6 @@
 
 A pod is a collection of containers sharing a network and mount namespace and is the basic unit of deployment in Kubernetes. All containers in a pod are scheduled on the same node.
 
-To launch a pod using the container image mhausenblas/simpleservice:0.5.0 and exposing a HTTP API on port 9876, execute:
-
-kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876
-
 Lets create a simple nginx webserver.
 
 ```
@@ -132,3 +128,5 @@ Now let's log into our pod. If you don't already, open another shell and run:
 ```
 kubectl exec -it first-nginx-pod-5d77bbb868-k48zk /bin/bash
 ```
+#PREVIOUS:# [Installing Helm](install_helm.md)
+#NEXT:# [Deploying app with Helm](deploy_app_helm.sh)

@@ -76,3 +76,6 @@ You can list any available pods.
 ```
 kubectl get pods
 ```
+
+#PREVIOUS:# [Kubernetes 101](kubernetes101.md)
+#NEXT:# [Installing Helm](install_helm.md)
