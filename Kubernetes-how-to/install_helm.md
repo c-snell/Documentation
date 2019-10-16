@@ -35,5 +35,6 @@ This will validate that helm’s local environment is set up correctly (and set 
 After helm init, you should be able to run `kubectl get pods --namespace kube-system` and see Tiller running.
 
 
-#PREVIOUS:# [Get to know your Kubernetes cluster](get-to-know-cluster.md)
-#NEXT:# [Deploy Your First Pod](deploy_first_pod.md)
+**PREVIOUS:** [Get to know your Kubernetes cluster](get-to-know-cluster.md)
+
+**NEXT:** [Deploy Your First Pod](deploy_first_pod.md)
