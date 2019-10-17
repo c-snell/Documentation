@@ -1,7 +1,5 @@
 ### Accessing the Dashboard UI:
 
-To protect your cluster data, Dashboard deploys with a minimal RBAC configuration by default. Currently, Dashboard only supports logging in with a Bearer Token. To create a token for this demo, we will create an admin user.
-
 ### Command line proxy
 You can access Dashboard using the kubectl command-line tool by running the following command:
 ```
@@ -14,11 +12,14 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 The UI can only be accessed from the machine where the command is executed. See `kubectl proxy --help` for more options.
 
->Warning: The admin user created in the tutorial will have administrative privileges and is for educational purposes only.
+To protect your cluster data, Dashboard deploys with a minimal RBAC configuration by default. Currently, Dashboard only supports logging in with a Bearer Token. To create a token for this demo, we will create an admin user.
 
-Open a second shell, if you don't have one open already
+Open a second terminal, if you don't have one open already.
 
 ### Create the Admin Service Account
+
+>Warning: The admin user created in the tutorial will have administrative privileges and is for educational purposes only.
+
 Copy the code below into `dashboard-adminuser.yml` file
 
 ```yaml
@@ -39,6 +40,7 @@ Run `kubectl apply`:
 Let's create the ClusterRoleBinding for the new admin-user. We will apply the `cluster-admin` role to the `admin-user`.
 
 Copy the code below into `admin-role-binding.yml` file
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -69,16 +71,19 @@ kubectl -n kube-system get secret | select-string -pattern admin-user
 ```
 
 It will return something similar to:
+
 ```
 admin-user-token-n7jx9
 ```
 
 Now run:
+
 ```
 kubectl -n kube-system describe secret admin-user-token-n7jx9
 ```
 
 Copy the token value:
+
 ```
 Name:         admin-user-token-n7jx9
 Namespace:    kube-system
@@ -96,19 +101,5 @@ ca.crt:     1025 bytes
 ```
 
 Paste it into the dashboard form then Click - Sign In.
-
-
-
-### Command line proxy
-You can access Dashboard using the kubectl command-line tool by running the following command:
-```
-kubectl proxy
-```
-Kubectl will make Dashboard available at:
-```
-http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
-```
-
-The UI can only be accessed from the machine where the command is executed. See `kubectl proxy --help` for more options.
 
 Courtesy: [https://medium.com/@kanrangsan/creating-admin-user-to-access-kubernetes-dashboard-723d6c9764e4](https://medium.com/@kanrangsan/creating-admin-user-to-access-kubernetes-dashboard-723d6c9764e4)
