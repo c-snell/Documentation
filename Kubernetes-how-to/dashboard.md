@@ -103,3 +103,8 @@ ca.crt:     1025 bytes
 Paste it into the dashboard form then Click - Sign In.
 
 Courtesy: [https://medium.com/@kanrangsan/creating-admin-user-to-access-kubernetes-dashboard-723d6c9764e4](https://medium.com/@kanrangsan/creating-admin-user-to-access-kubernetes-dashboard-723d6c9764e4)
+
+
+**PREVIOUS:** [Get to know your k8s cluster!](get_to_know_cluster.md)
+
+**NEXT:** [Installing Helm](install_helm.md)
