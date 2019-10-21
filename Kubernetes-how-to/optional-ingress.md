@@ -8,6 +8,8 @@ Ingress exposes HTTP and HTTPS routes from outside the cluster to services withi
    [ Ingress ]
    --|-----|--
    [ Services ]
+  -|----|-----|-
+  Pod  Pod   Pod
 ```   
 An Ingress can be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name based virtual hosting. An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure your edge router or additional frontends to help handle the traffic.
 
