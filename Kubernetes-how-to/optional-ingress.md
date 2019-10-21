@@ -225,7 +225,9 @@ Events:  <none>
 
 Now if everything is working correctly. Open your browser and you should see:
 
-Welcome to nginx!
+### Welcome to nginx!
+
+<br>
 
 Now for a final check, delete the `ingress-resource-nginx`. Refresh the webpage, it should stop working.
 
