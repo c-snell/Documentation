@@ -229,11 +229,13 @@ Now if everything is working correctly. Open your browser and you should see:
 
 <br>
 
-Now for a final check, delete the `ingress-resource-nginx`. Refresh the webpage, it should stop working.
+Now for a final check, delete the `ingress-resource-nginx`.
 
 ```
 kubectl delete ing ingress-resource-nginx
 ```
+
+Refresh the webpage, it should stop working.
 
 Recreate the rule again, and it should start routing traffic again.
 
