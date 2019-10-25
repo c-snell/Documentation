@@ -24,7 +24,7 @@ choco install kubernetes-helm
 ### INSTALLING TILLER
 Tiller, the server portion of Helm, typically runs inside of your Kubernetes cluster.
 
-Create Service Account and RBAC for TILLER
+Create Service Account and RBAC for Tiller
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
