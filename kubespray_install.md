@@ -135,9 +135,9 @@ cp -rfp inventory/sample inventory/mycluster
 vi inventory/mycluster/inventory.ini
 ```
 
-This will be specific to your environment. Define your Kubernetes masters and workers here. This is for Kubernetes only
+This will be specific to your environment. Define your Kubernetes masters and workers here.
 
-Example `inventory.ini` for a single master and two worker node cluster
+Example `inventory.ini` for a single master and two worker node cluster. This is for group 8 but modify to your group number.
 ```yaml
 # ## Configure 'ip' variable to bind kubernetes services on a
 # ## different ip than the default iface
@@ -172,7 +172,7 @@ kube-g8-node2
 ```
 
 
-Save and exit
+Save and exit.
 
 
 **OPTIONAL:** Set Proxy within Kubernetes. Remember to set domain and IPs as needed. (Optional if behind Corporate Proxy)
