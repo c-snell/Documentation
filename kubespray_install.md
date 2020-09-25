@@ -175,7 +175,7 @@ kube-g8-node2
 Save and exit.
 
 
-**OPTIONAL:** Set Proxy within Kubernetes. Remember to set domain and IPs as needed. (Optional if behind Corporate Proxy)
+**OPTIONAL:** Set Proxy within Kubernetes if behind corporate proxy. Remember to set domain and IPs as needed.
 
 ```
 vi inventory/mycluster/group_vars/all/all.yml
