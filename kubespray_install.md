@@ -179,13 +179,13 @@ Save and exit.
 
 ```
 vi inventory/mycluster/group_vars/all/all.yml
+```
 
-## Set these proxy values in order to update package manager and docker daemon to use proxies
+Set proxy
+
+```
 http_proxy: "http://proxy_ip:8080"
 https_proxy: "http://proxy_ip:8080"
-
-## Refer to roles/kubespray-defaults/defaults/main.yml before modifying no_proxy
-# no_proxy: "127.0.0.1,localhost,.example.com,.cluster.local,.svc,localaddress,`echo 192.168.1.{1..254},`172.17.0.0/16,172.30.0.0/16"
 ```
 
 
