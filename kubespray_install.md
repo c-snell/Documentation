@@ -113,3 +113,21 @@ Verify everything successfully came up:
 ```
 kubectl get nodes
 ```
+
+## Back on your local workstation
+
+Now that you have the cluster up and running, you will need to copy the `~/.kube/config` to your local workstation so you can interact with the cluster. 
+
+> This command is ran from your workstation not via SSH/Putty. Make sure to update the command with the proper group number.
+
+```
+mv ~/.kube/config ~/.kube/config_old
+scp root@kube-g8-master1:/root/.kube/config ~/.kube/
+```
+
+Now verify that you can connect from your workstation using the `kubectl get nodes`.
+
+If everything worked then you should see your cluster listed.
+
+You are now ready to deploy the HPE CSI Driver.
+
