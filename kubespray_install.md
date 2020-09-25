@@ -106,9 +106,9 @@ done
 
 Verify you can ssh as root on all nodes without password. I have seen where the first entry gets skipped for some reason. I also run it with IPs for additional checks. Just verify.
 
-# Install Kubespray. This will only be performed from a single host (i.e. an Ansible bastion server or from a master node).
+## Install Kubespray
 
-Setup environment
+Setup environment. This will only be performed from a single host (i.e. an Ansible bastion server or from a master node).
 
 ```
 cd ~ 
@@ -129,13 +129,13 @@ cd ~/workspace/kubespray
 pip3 install -r requirements.txt
 ```
 
-Configure your cluster
+## Configure your cluster
 ```
 cp -rfp inventory/sample inventory/mycluster
 vi inventory/mycluster/inventory.ini
 ```
 
-This will be specific to your environment. Define your Kubernetes masters and workers here.
+Define your Kubernetes masters and workers here. This will be specific to your environment. 
 
 Example `inventory.ini` for a single master and two worker node cluster. This is for group 8 but modify to your group number.
 ```yaml
@@ -194,4 +194,3 @@ Finally run the installer, we will be installing Kubernetes version 1.18
 ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml --extra-vars "kube_version=v1.18.9"
 ```
 Grab a cup of your favorite beverage.
-
