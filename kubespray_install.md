@@ -85,7 +85,7 @@ date
 Verify SSH keys exist:
 
 ```
-ls -al ~/.ssh
+ls -la ~/.ssh
 ```
 
 If needed, setup ssh keys on all nodes.
