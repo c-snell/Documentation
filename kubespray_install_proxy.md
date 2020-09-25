@@ -211,3 +211,7 @@ If everything worked then you should see your cluster listed.
 
 You are now ready to deploy the HPE CSI Driver.
 
+Head over the [scod.hpedev.io](https://scod.hpedev.io/csi_driver/deployment.html). 
+
+> Double check Helm is version > 3.2, if not head over to [helm.sh](https://helm.sh/docs/intro/install/) to install the latest binary.
+
