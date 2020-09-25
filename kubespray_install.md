@@ -1,77 +1,4 @@
-# Installation steps for Kubespray when working with Corporate proxy
-
-Kubespray installation steps.
-
-These steps have come from many hours to troubleshooting the HPE Proxy and installation steps. These steps will ensure that you have the best chance of a successful install of Kubernetes. There are a number of components within the cluster that need to be able to communicate to ensure the cluster works.
-
-
-Update the system and install Pip. Disable Firewall on all nodes.
-
-```
-yum update -y
-yum install python3-pip -y
-pip3 install --upgrade pip
-systemctl stop firewalld && systemctl disable firewalld
-```
-
-### Optional: Set System level proxy on all nodes (master/workers/load balancers) 
-
-Change domain and IP range as needed appropriate. `echo 192.168.1.{1..254}` is a wildcard to cover all IPs in your subnet. Some programs don't like CIDR notation. These proxy settings include the subnets used by Kubernetes and Docker so they aren't sent to the proxy and blackholed.
-
-```
-vi /etc/bashrc
-```    
-
-Example proxy settings
-```
-export http_proxy="http://proxy_ip:8080"
-export https_proxy="http://proxy_ip:8080"
-export no_proxy="127.0.0.1,localhost,.example.com,.cluster.local,.svc,localaddress,.localdomain.com,`echo 192.168.1.{1..254},`172.17.0.0/16,172.30.0.0/16"
-```
-
-```
-vi /etc/environment
-```
-
-Example proxy setting
-```
-no_proxy=127.0.0.1,localhost,.example.com,.cluster.local,.svc,localaddress,.localdomain.com,`echo 192.168.1.{1..254},`172.17.0.0/16,172.30.0.0/16
-http_proxy=http://proxy_ip:8080
-https_proxy=http://proxy_ip:8080
-```
-
-```
-vi /etc/profile.d/proxy.sh
-```
-
-Example proxy setting
-```
-export http_proxy="http://proxy_ip:8080"
-export https_proxy="http://proxy_ip:8080"
-export no_proxy="127.0.0.1,localhost,.example.com,.cluster.local,.svc,localaddress,`echo 192.168.1.{1..254},`172.17.0.0/16,172.30.0.0/16"
-```
-
-Reboot ALL nodes
-
-
-### Optional: Set Proxy for Docker.
-
-This directory may not exist yet.
-```
-mkdir -p /etc/systemd/system/docker.service.d/
-vi /etc/systemd/system/docker.service.d/no_proxy.conf
-vi no_proxy.conf
-```
-
-Example proxy setting
-```
-[Service]
-Environment="NO_PROXY=127.0.0.1,localhost,.example.com,.cluster.local,.svc,localaddress,`echo 192.168.1.{1..254},`172.17.0.0/16,172.30.0.0/16"
-Environment="HTTP_PROXY=http://proxy_ip:8080/"
-Environment="HTTPS_PROXY=http://proxy_ip:8080/"
-```
-
-
+# Installation steps for Kubespray 
 
 ## Kubespray Prerequisites
 
@@ -174,23 +101,15 @@ kube-g8-node2
 
 Save and exit.
 
-
-**OPTIONAL:** Set Proxy within Kubernetes if behind corporate proxy. Remember to set domain and IPs as needed.
-
-```
-vi inventory/mycluster/group_vars/all/all.yml
-```
-
-Set proxy
-
-```
-http_proxy: "http://proxy_ip:8080"
-https_proxy: "http://proxy_ip:8080"
-```
-
-
-Finally run the installer, we will be installing Kubernetes version 1.18
+Finally run the installer, we will be installing Kubernetes version 1.18.
 ```
 ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml --extra-vars "kube_version=v1.18.9"
 ```
-Grab a cup of your favorite beverage.
+
+**Grab a cup of your favorite beverage.**
+
+Verify everything successfully came up:
+
+```
+kubectl get nodes
+```
