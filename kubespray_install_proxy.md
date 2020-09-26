@@ -200,7 +200,10 @@ Now that you have the cluster up and running, you will need to copy the `~/.kube
 
 > This command is ran from your workstation not via SSH/Putty. Make sure to update the command with the proper group number.
 
+Click on Windows Subsystem for Linux icon <img src="images/centos_logo.png" alt="WSL" width="40" height="45"> in Taskbar or open **Powershell** and type `wsl`.
+
 ```
+cd ~
 mv ~/.kube/config ~/.kube/config_old
 scp root@kube-g8-master1:/root/.kube/config ~/.kube/
 ```
@@ -214,4 +217,3 @@ You are now ready to deploy the HPE CSI Driver.
 Head over the [scod.hpedev.io](https://scod.hpedev.io/csi_driver/deployment.html). 
 
 > Double check Helm is version > 3.2, if not head over to [helm.sh](https://helm.sh/docs/intro/install/) to install the latest binary.
-
