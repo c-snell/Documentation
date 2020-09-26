@@ -120,7 +120,10 @@ Now that you have the cluster up and running, you will need to copy the `~/.kube
 
 > This command is ran from your workstation not via SSH/Putty. Make sure to update the command with the proper group number.
 
+Click on ![WSL](images/centos_logo.png) in Taskbar or open **Powershell** and type `wsl`.
+
 ```
+cd ~
 mv ~/.kube/config ~/.kube/config_old
 scp root@kube-g8-master1:/root/.kube/config ~/.kube/
 ```
