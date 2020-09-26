@@ -120,7 +120,7 @@ Now that you have the cluster up and running, you will need to copy the `~/.kube
 
 > This command is ran from your workstation not via SSH/Putty. Make sure to update the command with the proper group number.
 
-Click on ![WSL](images/centos_logo.png) in Taskbar or open **Powershell** and type `wsl`.
+Click on Windows Subsystem for Linux icon <img src="images/centos_logo.png" alt="WSL" width="20" height="20"> in Taskbar or open **Powershell** and type `wsl`.
 
 ```
 cd ~
