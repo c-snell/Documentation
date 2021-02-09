@@ -43,9 +43,17 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 Reboot.
 
-The node prep is now complete. It is recommended to take a snapshot. The rest of this guide will walk you through the steps of configuring a single node Kubernetes deployment. 
+The node prep is now complete. It is recommended to take a snapshot. 
 
-You can use this script to finish the deployment:
+### Kubernetes Deployment
+
+The rest of this guide will walk you through the steps of configuring a single node Kubernetes deployment. 
+
+There are two deployment options, an [automated script](#automated-deployment) or [manual](#manual-deployment-method).
+
+#### Automated deployment
+
+This is a script to finish to quickly configure dependencies and deploy Kubernetes.
 
 ```
 ## Install Single node Kubernetes cluster. 
@@ -60,7 +68,6 @@ arg=$1
 
 # version of Kubernetes to deploy
 k8s_version=1.20.1
-
 
 if [[ $arg = "-remove" ]]
 then
@@ -88,6 +95,7 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
 EOF
+
   yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   yum install -y docker-ce-19.03.14-3.el7 docker-ce-cli-19.03.14-3.el7 containerd.io-19.03.14-3.el7
   systemctl start docker && systemctl enable docker
@@ -116,9 +124,9 @@ Deploy Kubernetes
 ./install_k8s.sh -install
 ```
 
-### Manual deployment
+### Manual deployment method
 
-Add Kubernetes repo
+Add Kubernetes repo:
 ```
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -157,11 +165,9 @@ Pre-pull Kubernetes images (Optional):
 kubeadm config images pull
 ```
 
-At this point, you can take a snapshot of the VM in case you mess something up at a later stage.
-
-Deploy Kubernetes.
+Deploy Kubernetes:
 ```
-kubeadm init --pod-network-cidr=192.168.0.0/16
+kubeadm init --kubernetes-version=1.20.1 --pod-network-cidr=192.168.0.0/16
 ```
 
 Create the .kube directory and config file:
@@ -175,12 +181,32 @@ Deploy the Kubernetes Container Network Interface (CNI):
 kubectl apply -f https://docs.projectcalico.org/v3.17/manifests/calico.yaml
 ```
 
+
+### Verify Kubernetes cluster is up and running
+
 All nodes should show in Ready state:
 ```
 kubectl get nodes
+NAME    STATUS   ROLES                  AGE   VERSION
+vader   Ready    control-plane,master   91s   v1.20.1
 ```
 
-Since this is a single node cluster, we need to apply a taint to the Master node so the control plane will schedule workloads onto it. If you don't do this then your application deployments will stay in a pending state.
+Verify all pods are Running.
+```
+kubectl get pods -A
+NAMESPACE     NAME                                      READY   STATUS    RESTARTS   AGE
+kube-system   calico-kube-controllers-86bddfcff-shgbj   1/1     Running   0          80s
+kube-system   calico-node-h9vdn                         1/1     Running   0          81s
+kube-system   coredns-74ff55c5b-mwlcp                   1/1     Running   0          80s
+kube-system   coredns-74ff55c5b-rvm8h                   1/1     Running   0          80s
+kube-system   etcd-vader                                1/1     Running   0          84s
+kube-system   kube-apiserver-vader                      1/1     Running   0          84s
+kube-system   kube-controller-manager-vader             1/1     Running   0          84s
+kube-system   kube-proxy-4b862                          1/1     Running   0          81s
+kube-system   kube-scheduler-vader                      1/1     Running   0          84s
+```
+
+Since this is a single node cluster, we need to apply a `taint` to the Master node so the control plane will schedule workloads. If you don't do this then your application deployments will stay in a pending state.
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
@@ -193,6 +219,10 @@ kubectl completion bash >/etc/bash_completion.d/kubectl
 echo 'alias k=kubectl' >>~/.bashrc
 echo 'complete -F __start_kubectl k' >>~/.bashrc
 ```
+
+Verification is now complete.
+
+### Install Helm
 
 With Kubernetes deployed, we can install Helm, a package manager for Kubernetes as we will be using it for our exercises. 
 
@@ -208,3 +238,5 @@ Verify it installed correctly:
 helm version
 version.BuildInfo{Version:"v3.5.2", GitCommit:"167aac70832d3a384f65f9745335e9fb40169dc2", GitTreeState:"dirty", GoVersion:"go1.15.7"}
 ```
+
+With a fully functional Kubernetes environment, we are now ready to deploy workloads and the HPE CSI Driver for Kubernetes. Head over to the [Persistent Storage for Kubernetes lab guide](https://scod.hpedev.io/learn/persistent_storage/index.html) to learn more. 
