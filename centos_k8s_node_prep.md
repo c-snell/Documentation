@@ -19,7 +19,7 @@ Disable `swap` during current session:
 swapoff -a
 ```
 
-Disable swap partition permanently by commenting out `swap` partition in `/etc/fstab`:
+Disable `swap` partition permanently by commenting out `swap` partition in `/etc/fstab`:
 ```
 vi /etc/fstab
 
@@ -109,6 +109,11 @@ fi
 Make script executable:
 ```
 chmod +x install_k8s.sh
+```
+
+Deploy Kubernetes
+```
+./install_k8s.sh -install
 ```
 
 ### Manual deployment
