@@ -1,9 +1,11 @@
 ### CentOS node prep for Kubernetes
 
-These are the general steps for preparing a CentOS 7 server to be used as a Kubernetes node (control plane or worker).
+These are the general steps for preparing a CentOS 7 server to be used as a Kubernetes node (control plane or worker). This document assumes there is no proxy between the workstation and the internet, if there is, you must configure `/etc/environment`, `/etc/profile.d/proxy.sh`, and Docker services. You can find an [example proxy configuration here.](https://github.com/c-snell/Documentation/blob/master/kubespray_install_proxy.md#optional-set-system-level-proxy-on-all-nodes-masterworkersload-balancers)
 
+```
 yum update -y
 systemctl stop firewalld.service && systemctl disable firewalld.service
+```
 
 Verify the following packages are installed:
 ```
@@ -12,12 +14,12 @@ yum install -y iscsi-initiator-utils device-mapper-multipath
 yum install -y yum-utils device-mapper-persistent-data lvm2
 ```
 
-Disable swap during current session:
+Disable `swap` during current session:
 ```
 swapoff -a
 ```
 
-Disable swap partition permanently by commenting out swap partition in /etc/fstab:
+Disable swap partition permanently by commenting out `swap` partition in `/etc/fstab`:
 ```
 vi /etc/fstab
 
@@ -33,7 +35,7 @@ UUID=d6b54d79-e021-4948-9de9-2a03a1c7c4f3 /boot                   xfs     defaul
 #/dev/mapper/centos-swap swap                    swap    defaults        0 0
 ```
 
-Disable SELinux
+Disable SELinux:
 ```
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
