@@ -208,13 +208,10 @@ The following files are generated in the directory:
 Obtain the RHCOS images Product Downloads (redhat.com)
 ISO file names resemble the following example:
 
-rhcos-<version>-live.<architecture>.iso
-
-
+**rhcos-<version>-live.<architecture>.iso**
 
 copy to datastore and mount within the VMs.
----
-
+	
 **Prep infrastructure**
 
 1. Create shell VMs 
