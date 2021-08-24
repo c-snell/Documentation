@@ -1,4 +1,4 @@
-Pre-requisites
+**Pre-requisites**
 
 Create Web Server - nginx
 Create load balancer - haproxy
@@ -6,7 +6,7 @@ Create load balancer - haproxy
 Installing a cluster on bare metal - Installing on bare metal | Installing | OpenShift Container Platform 4.6
 
 
-Minimum resource requirements
+**Minimum resource requirements**
 
 Each cluster machine must meet the following minimum requirements:
 
@@ -16,7 +16,7 @@ Each cluster machine must meet the following minimum requirements:
 | Control plane | RHCOS | 4 | 16 GB | 120 GB |
 | Compute | RHCOS or RHEL 7.6 | 2 | 8 GB | 120 GB |
 
-Procedure
+**Procedure**
 
 1. Configure DHCP or set static IP addresses on each node.
 2. Provision the required load balancers.
@@ -27,7 +27,7 @@ Procedure
 Firewall or disable firewall on load balancer
 
 
-Network topology requirements
+**Network topology requirements**
 
 The infrastructure that you provision for your cluster must meet the following network topology requirements.
 
@@ -53,11 +53,11 @@ Before you install OpenShift Container Platform, you must provision two load bal
    HTTPS traffic: 443
    HTTP traffic: 80
 
-User-provisioned DNS requirements
+**User-provisioned DNS requirements**
 
 The following DNS records are required for an OpenShift Container Platform cluster that uses user-provisioned infrastructure. In each record, <cluster_name> is the cluster name and <base_domain> is the cluster base domain that you specify in the install-config.yaml file. A complete DNS record takes the form: <component>.<cluster_name>.<base_domain>..
 
-Table 5. Required DNS records
+**Table 5. Required DNS records**
 Component
 Record
 Description
@@ -73,7 +73,7 @@ Routes
 A wildcard DNS A/AAAA or CNAME record that points to the load balancer that targets the machines that run the Ingress router pods, which are the worker nodes by default. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.
 
 
-Procedure
+**Procedure**
 
 1. If you do not have an SSH key that is configured for password-less authentication on your computer, create one. For example, on a computer that uses a Linux operating system, run the following command:
    
@@ -88,11 +88,11 @@ Procedure
    
    Specify the path and file name for your SSH private key, such as ~/.ssh/id_rsa
 
-Obtaining the installation program
+**Obtaining the installation program**
 
 Before you install OpenShift Container Platform, download the installation file on a local computer.
 
-Prerequisites
+**Prerequisites**
 
 - A computer that runs Linux or macOS, with 500 MB of local disk space
 Procedure
@@ -107,10 +107,10 @@ Procedure
 
 
 
-Manually creating the installation configuration file
+**Manually creating the installation configuration file**
 
 
-Procedure
+**Procedure**
 
 1. Create an installation directory to store your required installation assets in:
    
@@ -157,7 +157,7 @@ sshKey: '<ssh_key>'
 Creating the Kubernetes manifest and Ignition config files
 
 
-Procedure
+**Procedure**
 
 1. Generate the Kubernetes manifests for the cluster: 
 ```
@@ -215,7 +215,7 @@ rhcos-<version>-live.<architecture>.iso
 copy to datastore and mount within the VMs.
 ---
 
-Prep infrastructure
+**Prep infrastructure**
 
 1. Create shell VMs 
 2. Copy the MAC addresses
@@ -227,7 +227,7 @@ Prep infrastructure
 	2. Workers
 	3. Load Balancer
 	4. API server > load balancer
-	5. Wildcard *.apps.ocp46.virtware.io to load balancer
+	5. Wildcard *.apps.ocp46.example.io to load balancer
 
 
 5. With IPs now update the load balancer with forwarders
@@ -316,10 +316,10 @@ sudo coreos-installer install --ignition-url=http://10.10.1.25/worker.ign --inse
 ```
 reboot node once install is complete
 
-Creating the cluster
+###Creating the cluster
 
 
-Procedure
+**Procedure**
 
 1. Monitor the bootstrap process:
    
@@ -348,7 +348,7 @@ You must remove the bootstrap machine from the load balancer at this point. You 
 Logging in to the cluster
 
 
-Procedure
+**Procedure**
 
 1. Export the kubeadmin credentials:
    
@@ -416,7 +416,7 @@ Watch the cluster components come online:
 $ watch -n5 oc get clusteroperators
 ```
 
-Configuring registry storage for bare metal
+**Configuring registry storage for bare metal**
 
 
 
