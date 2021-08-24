@@ -125,7 +125,7 @@ The install-config.yaml  file is consumed during the next step of the installa
 Working install-config.yaml: Make a BACKUP!!!!
 ```
 apiVersion: v1 
-baseDomain: virtware.io 
+baseDomain: example.io 
 compute: 
 - hyperthreading: Enabled 
   name: worker 
@@ -144,14 +144,14 @@ networking:
   serviceNetwork: 
   - 172.30.0.0/16 
 proxy: 
-  httpProxy: http://16.85.88.10:8080 
-  httpsProxy: http://16.85.88.10:8080 
-  noProxy: localhost,127.0.0.1,10.10.1.110,10.10.1.111,10.10.1.112,10.10.1.113,10.10.1.114,10.10.1.115,10.10.1.116,10.10.1.117,.virtware.io,10.10.1.1/24,10.10.2.1/24,10.0.0.0/16,10.128.0.0/14,172.30.0.0/16,10.10.1.80,10.10.1.87,10.10.1.118,10.10.1.119,10.10.1.120 
+  httpProxy: http://proxy:8080 
+  httpsProxy: http://proxy:8080 
+  noProxy: <IPs> 
 platform: 
   none: {} 
 fips: false 
-pullSecret: '{"auths":{"cloud.openshift.com":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K3NuZWhhcmFpMXFnaWJ5b2pxcTJvc2d5MXQ3eWFqYXhxendoOkc0MDlCQUhMWFdUWFU3VktNT0FKVU1VV0ZMQ0VGRzg2VjlDQUNVMkVJMFhUMTdZUk8wQlNJR0dEWVJXV0FEVlM=","email":"sneha.rai@hpe.com"},"quay.io":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K3NuZWhhcmFpMXFnaWJ5b2pxcTJvc2d5MXQ3eWFqYXhxendoOkc0MDlCQUhMWFdUWFU3VktNT0FKVU1VV0ZMQ0VGRzg2VjlDQUNVMkVJMFhUMTdZUk8wQlNJR0dEWVJXV0FEVlM=","email":"sneha.rai@hpe.com"},"registry.connect.redhat.com":{"auth":"NTIzMzc3MjR8dWhjLTFRZ2lCeU9qcXEyT3NHeTF0N3lBSmFYUXp3SDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTJNekk1TVdVeE5XTmlNMk0wTkdKak9EZGxNV0UwWlRjellXUTFZbUl4TnlKOS5Hc2RnN3lrM2wzVGctT2tScjFnTm96RFFqZko0VS1hcXpaMFpXTmtvZTJJcUVWdUlrU0RmeWlWWGdlOHU3bXlfSU1ZaHhyNFAxcFNlXy0xSnhsNFppMXVxd0taWjJzUmdHa2FObDlZdmdneldpNm1HUWNyT1BUYWJTNEpyZkxEbV83Szd2bFpPc184dlY1anNzUzlzWTFMTnlKRTJmYVpBcHNtUVEzeFdjeEp0aWZnVTJ2UVF0U0VsR2Y3YnZlRUNJa0I0R3Yta1QwakV5bEZEUnVwVW9HMTdfS20xZmJjYm5URnVwc1NrVkhOdXc5OGgxei1nX1E4NjQyWkZlTDJlc3lDSUhpanRwSWNlWF9NQ2k0ZE84Z05CMXhPX3o3a0htdUl4Nk1Jd2ZJcS1zYVBCQ2FJQVR3OTJSS2JaZHltYlRjaGV5LWpsdUlJc3RDeWtmbklMLUlnQlVnV19fa3NwNXNPZHF2N2FHTXlXa1lkZDFuZWY2MVJHWVQ4NVhqTjlxV0NUWmxSWG9ab1pnZktQcnM1d2dBZmJnZzhZSk44MU9GblZuMnhDSFRJdjRPdHBhazZQQWE5R2VyckJEUDh4OXhNQkhPYVVJYjJLSnhRa3NEV2x1M1YyWi1SeTZ1bkJJczg2cFQ2eFlkeVAxWDRyM2EyQ2x6ME5IazRrWVVuVEs2VTE5WC1KaGFMdTMxZ210MzZSUE1jMnAxb1p4Y0x3emFrZEx4REdXTDlzOFV1VXloVW90TkxwNUw0NV9TbElSR1UtQjBiUWRpZFlJbkQ5QUdoam56SlRwd0dtdGM1VWJHZ0R0Um1kRTNVWDk3ZlN2amdBY2FBNmhYZ0loSllJZzlNRU1IU29QVzV1VWhEdXVOVzg3U19LcFNZa0t0WElnZVAxWDFiS1QzYw==","email":"sneha.rai@hpe.com"},"registry.redhat.io":{"auth":"NTIzMzc3MjR8dWhjLTFRZ2lCeU9qcXEyT3NHeTF0N3lBSmFYUXp3SDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTJNekk1TVdVeE5XTmlNMk0wTkdKak9EZGxNV0UwWlRjellXUTFZbUl4TnlKOS5Hc2RnN3lrM2wzVGctT2tScjFnTm96RFFqZko0VS1hcXpaMFpXTmtvZTJJcUVWdUlrU0RmeWlWWGdlOHU3bXlfSU1ZaHhyNFAxcFNlXy0xSnhsNFppMXVxd0taWjJzUmdHa2FObDlZdmdneldpNm1HUWNyT1BUYWJTNEpyZkxEbV83Szd2bFpPc184dlY1anNzUzlzWTFMTnlKRTJmYVpBcHNtUVEzeFdjeEp0aWZnVTJ2UVF0U0VsR2Y3YnZlRUNJa0I0R3Yta1QwakV5bEZEUnVwVW9HMTdfS20xZmJjYm5URnVwc1NrVkhOdXc5OGgxei1nX1E4NjQyWkZlTDJlc3lDSUhpanRwSWNlWF9NQ2k0ZE84Z05CMXhPX3o3a0htdUl4Nk1Jd2ZJcS1zYVBCQ2FJQVR3OTJSS2JaZHltYlRjaGV5LWpsdUlJc3RDeWtmbklMLUlnQlVnV19fa3NwNXNPZHF2N2FHTXlXa1lkZDFuZWY2MVJHWVQ4NVhqTjlxV0NUWmxSWG9ab1pnZktQcnM1d2dBZmJnZzhZSk44MU9GblZuMnhDSFRJdjRPdHBhazZQQWE5R2VyckJEUDh4OXhNQkhPYVVJYjJLSnhRa3NEV2x1M1YyWi1SeTZ1bkJJczg2cFQ2eFlkeVAxWDRyM2EyQ2x6ME5IazRrWVVuVEs2VTE5WC1KaGFMdTMxZ210MzZSUE1jMnAxb1p4Y0x3emFrZEx4REdXTDlzOFV1VXloVW90TkxwNUw0NV9TbElSR1UtQjBiUWRpZFlJbkQ5QUdoam56SlRwd0dtdGM1VWJHZ0R0Um1kRTNVWDk3ZlN2amdBY2FBNmhYZ0loSllJZzlNRU1IU29QVzV1VWhEdXVOVzg3U19LcFNZa0t0WElnZVAxWDFiS1QzYw==","email":"sneha.rai@hpe.com"}}}' 
-sshKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCmknRgYq3+V8Son+hYGdXxXp7x6o6n3pl9zLGhT5oncq6rAugujBom15w+PMxKSem+inZNF/jhJDkF2yhvQAoe7F8aE5MNMzWmywUbqttbMxCUOOlL7m83yOWVPE2lNZ45aeWOveYHZj/IwTTagr240Iihi6ZoRmqHvGjslgp+ThG4yICASfIbOkOz3Cj/qaHmlZQdiZL2Tur3nicp3l+LMHOFlLrHoscg2LRTEwt5b/fzM21/GiHD+KTXHoLOeDitmHQzlYSvYJrYNQlqN+iuFpSUhtZoo6X6rb9d806QooZ6DgzMLiCj2AdSmAeCYbYqzvqTejKcvnSDr+vw3nhjS8npar5IGgHHKEz80iRBuukWghfDM7LgOxDnDYx5ao3w8uN7TKtmKMx4TsV1hR0y3IVfDxvWoYUuh6WJXApk/pD3fuywkZzn2Z/C1q/jvulWck2ndmLylRU5wrhqQjOmeCfBYvHJscsWLdkJa+22gDpIdrobfPlPXOMv9IMJaXe9H7HvCcRfwX9LI+UBuu3w68Xw+fCLgLkdEl+oueZYgXm0h2xQccjwULFuh+OikWWYwiL9pR6SYu4aiPnrzb84LIydihWJ2NvRMDFFU+fVwjF3us/rT+MA8iGDJSMtGLVQ2fF82XphmqOX5btwWvCsLFQUM3mmC58xjm9KF6LcRw== root@volgrim-win10'
+pullSecret: '<pull_secret>' 
+sshKey: '<ssh_key>'
 ```
 
 Creating the Kubernetes manifest and Ignition config files
@@ -441,7 +441,7 @@ INFO Waiting up to 40m0s for the cluster at https://api.ocp46.virtware.io:6443 t
 INFO Waiting up to 10m0s for the openshift-console route to be created...
 INFO Install complete!
 INFO To access the cluster as the system:admin user when using 'oc', run 'export KUBECONFIG=/root/ocpinstall/ocp4/clusters/4.6/vsphere/openshift/auth/kubeconfig'
-INFO Access the OpenShift web-console here: https://console-openshift-console.apps.ocp46.virtware.io
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.ocp46.example.io
 INFO Login to the console with user: "kubeadmin", and password: "SEw6e-z9XwP-xXbqa-JvN3v"
 INFO Time elapsed: 0s
 ```
